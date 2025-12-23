@@ -1,65 +1,108 @@
-import Image from "next/image";
+'use client';
 
-export default function Home() {
+import React, { useRef } from 'react'; // Bỏ useState vì không dùng
+import { Canvas, useFrame } from '@react-three/fiber';
+import { OrbitControls, Sparkles, Stars, Float, Text } from '@react-three/drei';
+import * as THREE from 'three'; // Import để lấy kiểu dữ liệu THREE.Mesh
+
+// Định nghĩa kiểu dữ liệu cho props của TreeLayer
+interface TreeLayerProps {
+  position: [number, number, number];
+  scale: [number, number, number];
+  color: string;
+}
+
+// 1. Component tạo từng tầng lá của cây thông
+function TreeLayer({ position, scale, color }: TreeLayerProps) {
+  // Báo cho TypeScript biết ref này sẽ gắn vào một Mesh
+  const meshRef = useRef<THREE.Mesh>(null);
+
+  // Hiệu ứng xoay nhẹ cho sinh động
+  useFrame((state) => {
+    const t = state.clock.getElapsedTime();
+    // Kiểm tra meshRef.current có tồn tại không trước khi dùng
+    if (meshRef.current) {
+      meshRef.current.rotation.y = Math.sin(t / 2) * 0.1;
+    }
+  });
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <mesh ref={meshRef} position={position} scale={scale} castShadow receiveShadow>
+      <coneGeometry args={[1, 1.5, 8]} />
+      <meshStandardMaterial color={color} roughness={0.3} metalness={0.1} />
+    </mesh>
+  );
+}
+
+// 2. Component Cây Thông hoàn chỉnh
+function ChristmasTree() {
+  return (
+    <Float speed={1.5} rotationIntensity={0.2} floatIntensity={0.5}>
+      <group position={[0, -1.5, 0]}>
+        {/* Thân cây */}
+        <mesh position={[0, 0.5, 0]}>
+          <cylinderGeometry args={[0.2, 0.4, 1.5]} />
+          <meshStandardMaterial color="#5c4033" />
+        </mesh>
+
+        {/* Các tán lá */}
+        <TreeLayer position={[0, 1.5, 0]} scale={[1.8, 1.2, 1.8]} color="#0f5f34" />
+        <TreeLayer position={[0, 2.5, 0]} scale={[1.4, 1.2, 1.4]} color="#157a46" />
+        <TreeLayer position={[0, 3.4, 0]} scale={[1.0, 1.2, 1.0]} color="#1e9959" />
+
+        {/* Ngôi sao trên đỉnh */}
+        <mesh position={[0, 4.2, 0]}>
+          <dodecahedronGeometry args={[0.3, 0]} />
+          <meshStandardMaterial color="yellow" emissive="orange" emissiveIntensity={2} />
+        </mesh>
+      </group>
+    </Float>
+  );
+}
+
+// 3. Trang chính
+export default function ChristmasPage() {
+  return (
+    <div style={{ width: '100vw', height: '100vh', background: '#050b14' }}>
+      <Canvas shadows camera={{ position: [0, 2, 8], fov: 50 }}>
+        {/* Ánh sáng */}
+        <ambientLight intensity={0.5} />
+        <pointLight position={[10, 10, 10]} intensity={1} castShadow />
+        <spotLight position={[-10, 10, 10]} angle={0.3} intensity={2} color="red" />
+        <spotLight position={[10, 10, -10]} angle={0.3} intensity={2} color="green" />
+
+        {/* Cây thông */}
+        <ChristmasTree />
+
+        {/* Hiệu ứng Tuyết rơi (Sparkles) */}
+        <Sparkles
+          count={500}
+          scale={[10, 10, 10]}
+          size={4}
+          speed={0.4}
+          opacity={0.8}
+          color="#ffffff"
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+
+        {/* Bầu trời sao */}
+        <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
+
+        {/* Chữ 3D */}
+        <Float speed={2} rotationIntensity={0.5} floatIntensity={0.5}>
+          <Text
+            position={[0, -1.8, 2]}  // Sửa từ -2.5 thành -1.8 để đưa chữ lên cao hơn
+            fontSize={0.6}           // Sửa từ 0.8 thành 0.6 để chữ nhỏ lại
+            color="#ff4d4d"
+            anchorX="center"
+            anchorY="middle"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+            Merry Christmas!
+          </Text>
+        </Float>
+
+        {/* Cho phép xoay camera */}
+        <OrbitControls enableZoom={false} autoRotate autoRotateSpeed={0.5} />
+      </Canvas>
     </div>
   );
 }
