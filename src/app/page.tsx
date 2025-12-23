@@ -98,7 +98,7 @@ export default function ChristmasPage() {
         <GiftBox position={[4, -2.5, -1.5]} scale={0.6} color="#00b894" ribbonColor="#d63031" rotation={[0, 1, 0]} />
         <GiftBox position={[1, -3, -4]} scale={0.8} color="#fd9644" ribbonColor="#2d3436" rotation={[0, 2, 0]} />
         <GiftBox position={[0, -2, -4]} scale={0.8} color="#fd9644" ribbonColor="#2d3436" rotation={[0, 2, 0]} />
-        <GiftBox position={[0, -15, 0]} scale={0.8} color="#e17055" ribbonColor="#2d3436" rotation={[0, 2, 0]} />
+        <GiftBox position={[0, -2, 0]} scale={0.8} color="#e17055" ribbonColor="#2d3436" rotation={[0, 2, 0]} />
         
         {/* --- HỘP QUÀ ĐẶC BIỆT 1 (BÊN PHẢI) --- */}
         <GiftBox 
@@ -140,7 +140,7 @@ export default function ChristmasPage() {
         <FloatingPhoto url="/anh4.jpg" position={[-8, 8, -10]} rotation={[Math.PI / 12, 0, 0]} scale={0.8} />
         <FloatingPhoto url="/anh5.jpg" position={[0, 7, -15]} rotation={[Math.PI / 12, 0, 0]} scale={0.8} />
         <FloatingPhoto url="/anh6.jpg" position={[8, 5, -20]} rotation={[Math.PI / 12, 0, 0]} scale={0.8} />
-        <FloatingPhoto url="/anh7.jpg" position={[0, -10, 2]} rotation={[Math.PI / 12, 0, 0]} scale={0.8} />
+        <FloatingPhoto url="/anh7.jpg" position={[0, 7, 2]} rotation={[Math.PI / 12, 0, 0]} scale={0.8} />
         <FloatingPhoto url="/anh8.jpg" position={[-7, 6, -2]} rotation={[Math.PI / 12, 0, 0]} scale={0.8} />
         <FloatingPhoto url="/anh9.jpg" position={[10, 5, -2]} rotation={[Math.PI / 12, 0, 0]} scale={0.8} />
         <FloatingPhoto url="/anh10.jpg" position={[0, 5, -2]} rotation={[Math.PI / 12, 0, 0]} scale={0.8} />
@@ -159,7 +159,15 @@ export default function ChristmasPage() {
             </Text>
         </Float>
 
-        <OrbitControls enableZoom={false} autoRotate autoRotateSpeed={0.5} minPolarAngle={Math.PI/4} maxPolarAngle={Math.PI/2 + 0.2} />
+        <OrbitControls 
+            enableZoom={true}      // Bật tính năng zoom (lăn chuột hoặc vuốt 2 ngón tay)
+            minDistance={5}        // Zoom gần nhất là 5 (để không chui tọt vào trong cây thông)
+            maxDistance={25}       // Zoom xa nhất là 25 (để không bay ra khỏi vũ trụ)
+            autoRotate 
+            autoRotateSpeed={0.5} 
+            minPolarAngle={Math.PI/4} 
+            maxPolarAngle={Math.PI/2 + 0.2} 
+        />
       </Canvas>
     </div>
   );
