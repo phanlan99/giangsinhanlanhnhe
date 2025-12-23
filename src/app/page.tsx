@@ -11,13 +11,14 @@ import FloatingPhoto from '../../components/FloatingPhoto';
 import GiftBox from '../../components/GiftBox';
 import FloatingText from '../../components/FloatingText';
 import ArrowPointer from '../../components/ArrowPointer';
+import SantaClaus from '../../components/SantaClaus'; // <--- IMPORT MỚI
 
 export default function ChristmasPage() {
   const [isPlaying, setIsPlaying] = useState(false);
   
   // --- STATE QUẢN LÝ MŨI TÊN ---
-  const [showArrow1, setShowArrow1] = useState(true); // Mũi tên cho hộp quà bên phải
-  const [showArrow2, setShowArrow2] = useState(true); // Mũi tên cho hộp quà bên trái (Mới)
+  const [showArrow1, setShowArrow1] = useState(true); 
+  const [showArrow2, setShowArrow2] = useState(true); 
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -78,6 +79,10 @@ export default function ChristmasPage() {
         <ChristmasTree position={[8, -3, -5]} scale={1.5} />
         <ChristmasTree position={[-8, -3, -5]} scale={1.5} />
 
+        {/* --- ÔNG GIÀ NOEL (MỚI THÊM) --- */}
+        {/* Đặt vị trí y=-2.5 để đứng trên mặt sàn, hơi chếch về bên phải (x=2) và phía trước (z=1) */}
+        <SantaClaus position={[2, -2.5, 1]} scale={1.1} rotation={[0, -Math.PI / 6, 0]} />
+
 
         {/* CÁC DÒNG CHỮ BAY */}
         <FloatingText text="Bình an" position={[-10, 6, -5]} rotation={[0, Math.PI / 6, 0]} color="#ffeb3b" size={0.25} />
@@ -95,7 +100,6 @@ export default function ChristmasPage() {
         <GiftBox position={[0, -2, -4]} scale={0.8} color="#fd9644" ribbonColor="#2d3436" rotation={[0, 2, 0]} />
         <GiftBox position={[0, -15, 0]} scale={0.8} color="#e17055" ribbonColor="#2d3436" rotation={[0, 2, 0]} />
         
-        {/* ======================================================== */}
         {/* --- HỘP QUÀ ĐẶC BIỆT 1 (BÊN PHẢI) --- */}
         <GiftBox 
             position={[6, -2.5, 0.5]} 
@@ -104,14 +108,12 @@ export default function ChristmasPage() {
             ribbonColor="#fdcb6e" 
             rotation={[0, 0.5, 0]} 
             message="Không có quà bởi vì bạn đã là món quà =))))"
-            onInteract={() => setShowArrow1(false)} // Ẩn mũi tên 1
+            onInteract={() => setShowArrow1(false)} 
         />
-        {/* Mũi tên 1 */}
         {showArrow1 && (
             <ArrowPointer position={[6, -0.7, 0.5]} color="yellow" />
         )}
 
-        {/* ======================================================== */}
         {/* --- HỘP QUÀ ĐẶC BIỆT 2 (BÊN TRÁI - I LOVE YOU 3000) --- */}
         <GiftBox 
             position={[-6, -2.5, 0.5]} 
@@ -120,13 +122,11 @@ export default function ChristmasPage() {
             ribbonColor="#ffeaa7" 
             rotation={[0, 0.5, 0]} 
             message="I love you 3000!" 
-            onInteract={() => setShowArrow2(false)} // Ẩn mũi tên 2
+            onInteract={() => setShowArrow2(false)} 
         />
-        {/* Mũi tên 2 (Màu hồng cho lãng mạn) */}
         {showArrow2 && (
             <ArrowPointer position={[-6, -0.7, 0.5]} color="#fd79a8" />
         )}
-        {/* ======================================================== */}
 
 
         {/* --- NGƯỜI TUYẾT --- */}
